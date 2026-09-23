@@ -1,2 +1,10 @@
-package com.example.payment.infrastructure.adapter.out.persistence;public class SpringDataPaymentRepository {
+package com.example.payment.infrastructure.adapter.out.persistence;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.UUID;
+
+@Repository
+public interface SpringDataPaymentRepository extends JpaRepository<PaymentEntity, UUID> {
 }
