@@ -1,2 +1,4 @@
-package com.example.payment.domain.exception;public class PaymentNotFoundException {
+package com.example.payment.domain.exception;
+
+public class PaymentNotFoundException {
 }

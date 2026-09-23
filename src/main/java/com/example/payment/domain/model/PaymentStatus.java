@@ -1,2 +1,7 @@
-package com.example.payment.domain.model;public class PaymentStatus {
+package com.example.payment.domain.model;
+
+public enum PaymentStatus {
+    PENDING,
+    APPROVED,
+    FAILED
 }
