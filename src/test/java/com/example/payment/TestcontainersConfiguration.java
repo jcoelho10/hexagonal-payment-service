@@ -1,4 +1,4 @@
-package org.example.payment;
+package com.example.payment;
 
 import org.springframework.boot.test.context.TestConfiguration;
 

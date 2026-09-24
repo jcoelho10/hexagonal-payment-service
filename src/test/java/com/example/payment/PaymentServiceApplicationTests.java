@@ -1,4 +1,4 @@
-package org.example.payment;
+package com.example.payment;
 
 import com.example.payment.PaymentServiceApplication;
 import org.junit.jupiter.api.DisplayName;

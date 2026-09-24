@@ -1,4 +1,4 @@
-package org.example.payment.application.service;
+package com.example.payment.application.service;
 
 import com.example.payment.application.service.ProcessPaymentService;
 import com.example.payment.domain.model.Money;
