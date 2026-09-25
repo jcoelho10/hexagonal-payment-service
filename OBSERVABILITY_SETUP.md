@@ -14,6 +14,57 @@ A observabilidade do projeto é sustentada pelos **3 Pilares da Telemetria**, ce
 
 ---
 
+Endereços de Acesso Rápido:
+Grafana (Dashboards e Consultas): http://localhost:3000 (Login: admin / Senha: admin)
+
+Prometheus (Métricas Brutas): http://localhost:9090
+
+Spring Actuator (Métricas da Aplicação): http://localhost:8080/actuator/prometheus
+
+🔍 Como usar as ferramentas no dia a dia
+1. Consultar Logs no Grafana Loki
+   Acesse o Grafana (http://localhost:3000).
+
+No menu lateral esquerdo, clique em Explore (ícone de bússola).
+
+No seletor superior de Data Source, escolha Loki.
+
+No campo de busca (LogQL), digite a consulta abaixo para ver os logs da aplicação em tempo real:
+
+Snippet de código
+{app="payment-service"}
+Para filtrar apenas por erros:
+
+Snippet de código
+{app="payment-service"} |= "ERROR"
+2. Rastrear uma Requisição Lenta (TraceID -> Tempo)
+   Toda requisição processada pelo Spring cria automaticamente um código único chamado traceId (exemplo: 4bf92f3577b34da6a3ce929d0e0e4736).
+
+Quando você visualizar um log no Loki, o traceId aparecerá destacado.
+
+O botão com o link para o Tempo estará associado ao traceId.
+
+Ao clicar nele, o Grafana abre a linha do tempo detalhada mostrando o tempo exato gasto em cada etapa do código (Controller, Persistência, Chama de Gateway, Evento Kafka).
+
+3. Monitorar a Resiliência (Resilience4j + Prometheus)
+   Para acompanhar se o seu Circuit Breaker abriu por instabilidade do fornecedor externo:
+
+No Grafana, acesse Explore e selecione a fonte de dados Prometheus.
+
+Busque pelas métricas do Resilience4j:
+
+resilience4j_circuitbreaker_state: Indica o estado atual do Circuit Breaker (0 para Closed, 1 para Open, 2 para Half-Open).
+
+resilience4j_retry_calls_total: Mostra quantas tentativas de retry foram acionadas.
+
+🛠️ Verificação Rápida de Saúde (Healthcheck)
+Você pode verificar se a aplicação e seus adaptadores estão funcionais via terminal:
+
+Bash
+curl http://localhost:8080/actuator/health
+
+---
+
 ## 🚀 Como Iniciar a Infraestrutura
 
 Com o Docker Desktop em execução, rode o comando na raiz do projeto:
