@@ -95,6 +95,6 @@ services:
       - loki
       - tempo
 
-  networks:
-    payment-network:
-      driver: bridge
+networks:
+  payment-network:
+    driver: bridge
