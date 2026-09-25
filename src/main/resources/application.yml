@@ -28,25 +28,41 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, prometheus, metrics, resilience4j.circuitbreakers
+        include: health, prometheus, metrics, resilience4j.circuitbreakers, env
+  tracing:
+    sampling:
+      probability: 1.0 # Em produção, reduza para 0.1 (10%)
+  otlp:
+    tracing:
+      endpoint: http://tempo:4318/v1/traces # Endpoint HTTP do Grafana Tempo
+  loki:
+    url: http://loki:3100/loki/api/v1/push
+
   metrics:
     export:
       prometheus:
         enabled: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
 
-  resilience4j:
-    circuitbreaker:
-      instances:
-        paymentGateway:
-          sliding-window-size: 10
-          failure-rate-threshold: 50
-          wait-duration-in-open-state: 10000ms
-          permitted-number-of-calls-in-half-open-state: 3
-          register-health-indicator: true
-    retry:
-      instances:
-        paymentGateway:
-          max-attempts: 3
-          wait-duration: 500ms
-          enable-exponential-backoff: true
-          exponential-backoff-multiplier: 2
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      paymentGateway:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10000ms
+        permitted-number-of-calls-in-half-open-state: 3
+        register-health-indicator: true
+  retry:
+    instances:
+      paymentGateway:
+        max-attempts: 3
+        wait-duration: 500ms
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
