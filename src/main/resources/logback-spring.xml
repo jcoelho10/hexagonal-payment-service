@@ -8,7 +8,7 @@
     <!-- Appender para Console com TraceID e SpanID -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%X{traceId:-},%X{spanId:-}] %logger{36} - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{correlationId}] %-5level [%X{traceId:-},%X{spanId:-}] %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -21,7 +21,9 @@
             <label>
                 <pattern>app=${appName},host=${HOSTNAME},level=%level</pattern>
             </label>
-            <message>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%X{traceId:-},%X{spanId:-}] %logger{36} - %msg</message>
+            <message>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{correlationId}] %-5level [%X{traceId:-},%X{spanId:-}] %logger{36} - %msg</pattern>
+            </message>
         </format>
     </appender>
 

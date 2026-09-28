@@ -1,0 +1,42 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "title": "Circuit Breaker State",
+      "type": "stat",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "resilience4j_circuitbreaker_state",
+          "legendFormat": "State (0=Closed, 1=Open, 2=HalfOpen)"
+        }
+      ]
+    },
+    {
+      "title": "Failed Calls Rate",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [
+        {
+          "expr": "rate(resilience4j_circuitbreaker_calls_total{kind=\"failed\"}[1m])",
+          "legendFormat": "Failed Calls/sec"
+        }
+      ]
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["spring-boot", "resilience4j"],
+  "time": { "from": "now-15m", "to": "now" },
+  "title": "Resilience4j Metrics Dashboard",
+  "version": 1
+}

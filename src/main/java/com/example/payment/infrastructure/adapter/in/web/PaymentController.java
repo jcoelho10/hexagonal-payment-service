@@ -3,7 +3,9 @@ package com.example.payment.infrastructure.adapter.in.web;
 import com.example.payment.domain.model.Money;
 import com.example.payment.domain.model.Payment;
 import com.example.payment.domain.port.in.ProcessPaymentUseCase;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +23,8 @@ public class PaymentController {
     public PaymentController(ProcessPaymentUseCase processPaymentUseCase) {this.processPaymentUseCase = processPaymentUseCase;}
 
     @PostMapping
-    public ResponseEntity<PaymentResponse> createPayment(@RequestBody CreatePaymentRequest request) {
+    // @PreAuthorize("hasAuthority('SCOPE_payment:write')") --- Desativando para testar localmente
+    public ResponseEntity<PaymentResponse> createPayment(@Valid @RequestBody CreatePaymentRequest request) {
         Money money = new Money(request.amount(), request.currency());
         Payment payment = processPaymentUseCase.execute(request.customerId(), money);
 

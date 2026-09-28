@@ -5,7 +5,6 @@ server:
   grpc_listen_port: 9096
 
 common:
-  instance_id: index-1
   path_prefix: /tmp/loki
   storage:
     filesystem:

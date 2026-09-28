@@ -1,0 +1,59 @@
+services:
+  # 1. MongoDB (Logs e Auditoria NoSQL)
+  mongodb:
+    image: mongo:7.0
+    container_name: dev-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=payment_audit
+    volumes:
+      - mongo_dev_data:/data/db
+
+  # 2. Redis (Cache e Sessões)
+  redis:
+    image: redis:7-alpine
+    container_name: dev-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_dev_data:/data
+
+  # 3. Apache Kafka + ZooKeeper (Mensageria)
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: dev-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: dev-kafka
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  # 4. Kafdrop (Interface Web para o Kafka)
+  kafdrop:
+    image: obsidiandynamics/kafdrop:4.0.1
+    container_name: dev-kafdrop
+    ports:
+      - "9000:9000"
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BROKERCONNECT: kafka:29092
+      JVM_OPTS: "-Xms32m -Xmx64m"
+      SERVER_SERVLET_CONTEXTPATH: "/"
+
+volumes:
+  mongo_dev_data:
+  redis_dev_data:

@@ -1,6 +1,8 @@
 spring:
   application:
     name: payment-service
+
+  # ---- OPÇÃO 1: BANCO H2 (Ativo no momento) ---
   datasource:
     url: jdbc:h2:mem:paymentdb
     driver-class-name: org.h2.Driver
@@ -13,8 +15,110 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: update
+      # Desativa a criação automática do Hibernate para evitar conflitos com as migrações
+      ddl-auto: validate
+    open-in-view: false
     show-sql: true
+
+  flyway:
+    enabled: true
+    # Local padrão onde os scripts SQL de migração ficam armazenados
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: "0"
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # URL do Identity Provider (ex: Keycloak, Cognito, Auth0 rodando na porta 8080 ou 8090)
+          issuer-uri: ${JWT_ISSUER_URI:http://localhost:8080/realms/payment-realm}
+
+  # --- OPÇÃO 2: POSTGRESQL NO DOCKER (Descomente se subir o container Postgres) ---
+  # datasource:
+  #   url: jdbc:postgresql://localhost:5432/payment_db
+  #   username: postgres
+  #   password: postgres
+  #   driver-class-name: org.postgresql.Driver
+  # jpa:
+  #   database-platform: org.hibernate.dialect.PostgreSQLDialect
+  #   hibernate:
+  #     ddl-auto: update
+  #   show-sql: true
+  # ====================================================================
+  # OPÇÃO B: MYSQL
+  # Dependência no pom.xml: com.mysql:mysql-connector-j
+  # ====================================================================
+  # datasource:
+  #   url: jdbc:mysql://localhost:3306/payment_db?createDatabaseIfNotExist=true&useSSL=false
+  #   username: mysqluser
+  #   password: mysqlpass
+  #   driver-class-name: com.mysql.cj.jdbc.Driver
+  # jpa:
+  #   database-platform: org.hibernate.dialect.MySQLDialect
+  #   hibernate:
+  #     ddl-auto: update
+  #   show-sql: true
+
+  # ====================================================================
+  # OPÇÃO C: MICROSOFT SQL SERVER
+  # Dependência no pom.xml: com.microsoft.sqlserver:mssql-jdbc
+  # ====================================================================
+  # datasource:
+  #   url: jdbc:sqlserver://localhost:1433;databaseName=payment_db;encrypt=false;trustServerCertificate=true
+  #   username: sa
+  #   password: YourStrongPass123!
+  #   driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  # jpa:
+  #   database-platform: org.hibernate.dialect.SQLServerDialect
+  #   hibernate:
+  #     ddl-auto: update
+  #   show-sql: true
+
+  # ====================================================================
+  # OPÇÃO D: ORACLE DATABASE
+  # Dependência no pom.xml: com.oracle.database.jdbc:ojdbc11
+  # ====================================================================
+  # datasource:
+  #   url: jdbc:oracle:thin:@localhost:1521/FREEPDB1
+  #   username: system
+  #   password: oraclepass
+  #   driver-class-name: oracle.jdbc.OracleDriver
+  # jpa:
+  #   database-platform: org.hibernate.dialect.OracleDialect
+  #   hibernate:
+  #     ddl-auto: update
+  #   show-sql: true
+  # ====================================================================
+  # CONFIGURAÇÃO DO MONGODB (Porta padrão 27017)
+  # ====================================================================
+  #  data:
+  #    mongodb:
+  # URI de conexão completa com usuário/senha criados no Docker:
+  # uri: mongodb://admin:adminpass@localhost:27017/payment_db?authSource=admin
+  # Ou se preferir propriedades separadas:
+  # host: localhost
+  # port: 27017
+  # database: payment_db
+  # username: admin
+  # password: adminpass
+  # authentication-database: admin
+
+  # ====================================================================
+  # CONFIGURAÇÃO DO REDIS (Porta padrão 6379)
+  # ====================================================================
+  # redis:
+  # host: localhost
+  # port: 6379
+  # password: caso defina senha no container
+  # timeout: 2000ms
+
+  # Habilita o cache do Spring gerenciado pelo Redis (se usar @EnableCaching)
+  # cache:
+  # type: redis
+  # redis:
+  # time-to-live: 600000ms # 10 minutos de TTL por padrão
+
   kafka:
     bootstrap-servers: localhost:9092
     producer:
@@ -22,7 +126,7 @@ spring:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
 server:
-  port: 8080
+  port: 8081
 
 management:
   endpoints:
@@ -34,9 +138,13 @@ management:
       probability: 1.0 # Em produção, reduza para 0.1 (10%)
   otlp:
     tracing:
-      endpoint: http://tempo:4318/v1/traces # Endpoint HTTP do Grafana Tempo
+      # Ajustado de "tempo:4318" para "localhost:4318" (acesso host -> container)
+      endpoint: http://localhost:4318/v1/traces
+      # endpoint: http://tempo:4318/v1/traces # Endpoint HTTP do Grafana Tempo
   loki:
-    url: http://loki:3100/loki/api/v1/push
+    # Ajustado de "loki:3100" para "localhost:3100" (acesso host -> container)
+    url: http://localhost:3100/loki/api/v1/push
+    # url: http://loki:3100/loki/api/v1/push
 
   metrics:
     export:
