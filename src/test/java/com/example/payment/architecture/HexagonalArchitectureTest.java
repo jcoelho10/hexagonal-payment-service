@@ -1,6 +1,6 @@
 package com.example.payment.architecture;
 
-/*
+/**
  * - Testes de Arquitetura Hexagonal (ArchUnit)
  */
 
