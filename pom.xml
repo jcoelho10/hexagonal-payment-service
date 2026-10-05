@@ -166,6 +166,7 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Testes de Integração & Resiliência (WireMock + Resilience4j) -->
         <!-- WireMock para simular chamadas de APIs externas -->
         <dependency>
             <groupId>org.wiremock</groupId>
@@ -197,13 +198,6 @@
             <groupId>net.jqwik</groupId>
             <artifactId>jqwik</artifactId>
             <version>1.8.4</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- Testes de Integração & Resiliência (WireMock + Resilience4j) -->
-        <dependency>
-            <groupId>org.wiremock</groupId>
-            <artifactId>wiremock-standalone</artifactId>
-            <version>3.5.2</version>
             <scope>test</scope>
         </dependency>
 
