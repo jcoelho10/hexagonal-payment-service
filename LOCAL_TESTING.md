@@ -626,3 +626,8 @@ docker compose up -d
 ---
 
 > **💡 Objetivo do guia:** ao concluir todos os testes, o ambiente local deverá permitir validar não apenas o funcionamento funcional do Payment Service, mas também aspectos importantes de uma aplicação backend moderna, incluindo **segurança, resiliência, observabilidade, rastreabilidade, validação de contratos e testes automatizados**.
+
+```
+Para executar o teste Testes de Mutação (PITest Plugin) de mutação via terminal:
+mvn pitest:mutationCoverage
+```
