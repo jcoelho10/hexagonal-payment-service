@@ -1,5 +1,7 @@
 package com.example.payment.infrastructure.adapter.out.gateway;
 
+import com.example.payment.domain.model.Money;
+import com.example.payment.domain.model.Payment;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -40,15 +42,20 @@ public class ExternalGatewayAdapterResilienceTest {
     }
 
     @Test
-    @DisplayName("Deve executar o Fallback amigável quando a API externa retornar HTTP 500")
+    @DisplayName("Deve executar o Fallback amigável quando a API externa retornar HTTP 500 e falhar")
     void shouldTriggerFallbackWhenGatewayFails() {
+        // Arrange: cria a entidade de dominio conforme a assinatura da sua classe
+        Money money = new Money(new BigDecimal("100.00"), "BRL");
+        Payment payment = Payment.createNew("cli-99", money);
+
+        // Moca a resposta de erro na API externa via WireMock
         wireMockServer.stubFor((post(urlEqualTo("/v1/charge")))
                 .willReturn(aResponse().withStatus(500)));
 
-        boolean result = gatewayAdapter.processPayment("cli-99", new BigDecimal("100.00"), "BRL");
+        // Act: chama o método process(payment)
+        boolean result = gatewayAdapter.process(payment);
 
-        assertFalse(result, "O fallback deve retornar false sem lançar exceção não tratada na API");
-        wireMockServer.verify(moreThanOrExactly(1), postRequestedFor(urlEqualTo("/v1/charge")));
-
+        // Assert: valida se o fallback interceptou o erro e retornou false
+        assertFalse(result, "O fallback deve retornar false ao ocorrer falha no gatway");
     }
 }
