@@ -630,4 +630,8 @@ docker compose up -d
 ```
 Para executar o teste Testes de Mutação (PITest Plugin) de mutação via terminal:
 mvn pitest:mutationCoverage
+
+# Caso tenha o K6 instalado localmente:
+Para executar o teste Teste de Carga e Vazão de Virtual Threads (Script K6):
+k6 run k6-load-test.js
 ```
