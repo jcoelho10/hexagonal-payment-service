@@ -10,6 +10,36 @@ Para implantar e gerenciar o **Payment Service** com qualidade enterprise em qua
 6. **Segurança de Credenciais e Identidade** (GOVERNANÇA)
 7. **Observabilidade e Monitoramento** (MÉTRICAS & LOGS)
 
+---
+
+A pasta terraform/ com os arquivos .tf traz as configurações de Infraestrutura como Código (IaC - Infrastructure as Code) do projeto usando o Terraform.
+
+Enquanto os arquivos do docker-compose-dev.yml servem para subir os containers e os bancos de dados localmente na sua máquina, as configurações do Terraform servem para provisionar toda a infraestrutura real equivalente nas provedoras de nuvem de forma automatizada e padronizada.
+
+🗺️ Como a pasta terraform/ está organizada no projeto?
+
+No seu projeto, a pasta foi dividida por provedor cloud:
+
+```text
+terraform/
+├── aws/
+│   └── main.tf    # Configura os recursos na Amazon Web Services (EKS, RDS, MSK, ElastiCache, etc.)
+├── azure/
+│   └── main.tf    # Configura os recursos na Microsoft Azure (AKS, Azure Postgres, Event Hubs, etc.)
+├── gcp/
+│   └── main.tf    # Configura os recursos no Google Cloud (GKE, Cloud SQL, Memorystore, etc.)
+└── oci/
+    └── main.tf    # Configura os recursos na Oracle Cloud (OKE, OCI Postgres, OCI Streaming, etc.)
+```    
+💡 Para que serve isso no contexto da sua aplicação?
+Automação Multi-Cloud: Se amanhã a empresa decidir implantar o payment-service na AWS (ou Azure, GCP, OCI), ninguém precisa entrar no painel web da nuvem e criar recursos manualmente clicando em botões.
+
+Reprodutibilidade: Com um único comando (terraform apply), o Terraform lê o arquivo main.tf correspondente e cria o cluster Kubernetes, os bancos de dados PostgreSQL e MongoDB, os clusters de Kafka e os caches de Redis na nuvem exatamente como configurados.
+
+Versionamento de Infraestrutura: As alterações na infraestrutura (como aumentar o tamanho do banco de dados ou criar um novo tópico no Kafka) passam a ser versionadas no mesmo histórico do Git do projeto.
+
+Portfólio / Nível Enterprise: No LinkedIn e no GitHub, ter a pasta terraform/ estruturada demonstra maturidade arquitetural (Cloud-Native / DevOps Ready), mostrando que o projeto não foi pensado apenas para rodar na máquina local, mas sim para ser implantado em ambiente produtivo em qualquer uma das quatro grandes nuvens do mercado.
+
 Abaixo está o detalhamento sequencial de cada serviço para cada provedor cloud.
 
 ---
